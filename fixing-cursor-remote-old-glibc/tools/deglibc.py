@@ -5,7 +5,10 @@ import sys, struct
 # requiring the newer glibc version node. Symbol resolution is handled
 # separately (fcntl64 == fcntl on this ABI); we only relax the version check.
 path = sys.argv[1]
-LOWER = b"GLIBC_2.14"   # present in verneed and in system libc 2.17
+# LOWER must be a version string already present in the module's .dynstr AND
+# provided by the system libc. x64/CentOS7 modules carry GLIBC_2.14; aarch64
+# modules' baseline is 2.17, so pass "GLIBC_2.17" as argv[2] there.
+LOWER = (sys.argv[2].encode() if len(sys.argv) > 2 else b"GLIBC_2.14")
 TARGETS = [b"GLIBC_2.28", b"GLIBC_2.29", b"GLIBC_2.30", b"GLIBC_2.31",
            b"GLIBC_2.32", b"GLIBC_2.33", b"GLIBC_2.34"]
 
